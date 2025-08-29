@@ -144,4 +144,65 @@ That’s why best practice is:
 
 ---
 
-Do you want me to also show you **how to verify which Node version your container actually runs** after build?
+## How do containers talk to each other in docker compose
+Great follow-up 👍
+
+In Docker Compose, containers talk to each other through an **auto-created private network**.
+
+---
+
+### 🔹 What happens when you run `docker compose up`
+
+* Docker Compose creates a **bridge network** (by default, named after your project/folder).
+* Every service (container) is added to that network automatically.
+* Inside that network, each service is reachable by its **service name** (not `localhost`).
+
+---
+
+### 🔹 Example (`docker-compose.yml`)
+
+```yaml
+version: "3.8"
+
+services:
+  db:
+    image: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: review
+    ports:
+      - "5432:5432"
+
+  app:
+    image: node:22
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgres://postgres:password@db:5432/review
+```
+
+---
+
+### 🔹 How they talk
+
+* From **`app` service**, the DB host is `db` (the service name), not `localhost`.
+* Docker DNS inside the network resolves `db` → the container’s IP.
+* So your Node app connects to Postgres like this:
+
+  ```
+  host = db
+  port = 5432
+  ```
+
+---
+
+### ✅ Key rule:
+
+* **Outside containers** (your laptop) → use `localhost:5432` (because of port mapping).
+* **Inside containers** (between services) → use the **service name** (e.g., `db`, `redis`, `postgres_ka_service`).
+
+---
+
+Do you want me to draw you a **diagram of how the containers + network connect**?
+

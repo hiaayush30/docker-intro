@@ -1,0 +1,26 @@
+# Use Docker Compose when your app needs multiple containers that should run together and talk to each other.
+  # A web app + database (Node.js + Postgres)
+  # A cache + backend + frontend (Redis + Express + React)
+  # Local dev setup with multiple services (API, DB, message queue, etc.)
+
+# postgres_ka_service is just the service name you chose.
+# It’s the identifier for that container within Docker Compose.
+# Other services can reach this container using that name as the hostname.
+# Example: if your Node.js app wants to connect to Postgres, the hostname is postgres_ka_service (not localhost).
+
+version: "3.8"
+
+services:
+  postgres_ka_service:
+    image: postgres  # will pull from hub.docker.com
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_DB: review
+      POSTGRES_PASSWORD: password
+
+  redis:
+    image: redis
+    ports:
+      - "6379:6379"
