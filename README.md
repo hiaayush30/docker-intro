@@ -1,3 +1,100 @@
+- building 
+```
+docker build -t my-node-docker .
+```
+- running
+```
+docker run -p 8000:8000 my-node-docker
+docker run -e SERVER_PORT=7000 -p 7000:7000 my-node-docker
+```
+- getting into the container 
+```
+docker exec -t nash_yo bash
+```
+Great question 🚀
+
+The `-it` flag is actually **two flags combined** that are often used together when running Docker containers:
+
+---
+
+### 🔹 `-i` → **interactive**
+
+* Keeps **STDIN (input)** open, even if not attached.
+* This allows you to type commands into the container after it starts.
+
+---
+
+### 🔹 `-t` → **pseudo-TTY**
+
+* Allocates a **pseudo-terminal (TTY)** so you get a proper shell experience (with colors, prompts, etc.).
+* Without `-t`, output looks raw and messy.
+
+---
+
+### 🔹 Together: `-it`
+
+* You get an **interactive shell** inside the container.
+* Commonly used when you want to “enter” a container and work inside it.
+
+👉 Example:
+
+```bash
+docker run -it ubuntu bash
+```
+
+* `ubuntu` → image name
+* `bash` → command to run inside the container
+* You’ll land in a bash shell inside the Ubuntu container, where you can type Linux commands.
+
+---
+
+✅ **Summary:**
+`-it` = **interactive + terminal**, lets you talk to the container as if it’s a real computer.
+
+---
+
+## docker run -t vs docker exec -it
+
+
+## 🔹 `docker run -it`
+
+* **Creates a new container** from an image and attaches you to it interactively.
+* Example:
+
+  ```bash
+  docker run -it ubuntu bash
+  ```
+
+  * Pulls the `ubuntu` image (if not already available).
+  * Starts a new container.
+  * Gives you a bash shell inside it.
+
+👉 When you **exit** (`Ctrl+D` or `exit`), the container stops (unless you run with `--rm`, the container still exists in a stopped state).
+
+---
+
+## 🔹 `docker exec -it`
+
+* **Executes a command inside an already running container.**
+* Example:
+
+  ```bash
+  docker exec -it mycontainer bash
+  ```
+
+  * Finds the running container named `mycontainer`.
+  * Opens a new bash session inside it.
+
+👉 You don’t create a new container, you just “enter” the existing one. Exiting doesn’t stop the container; it keeps running.
+
+---
+
+## ✅ Summary (easy way to remember)
+
+* **`docker run -it`** → start a **new container** interactively.
+* **`docker exec -it`** → go inside an **already running container** interactively.
+
+---
 ### 🔹 1. Why `nvm` doesn’t “stick” across `RUN`s in Docker
 
 * Each `RUN` instruction in a Dockerfile **creates a new container layer** with a **new shell session**.
